@@ -21,6 +21,9 @@ query {
 query {
   book(isbn: "1234") {
     title
+    sales {
+      amount
+    }
   }
 }
 ```

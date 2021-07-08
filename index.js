@@ -4,7 +4,10 @@ const { ApolloServer, gql } = require('apollo-server-express');
 let books = [{
   isbn: "1234",
   title: 'A good book',
-  author: 'Someone Famous'
+  author: 'Someone Famous',
+  sales: {
+    amount: 10
+  }
 }];
 
 const typeDefs = gql`
@@ -21,6 +24,11 @@ const typeDefs = gql`
     isbn: String!
     title: String!
     author: String!
+    sales: Sales
+  }
+
+  type Sales {
+    amount: Int
   }
 `;
  
