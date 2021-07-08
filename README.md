@@ -1,4 +1,4 @@
-# REST API Example
+# Message Queue API Example
 
 ## Quick Start
 
