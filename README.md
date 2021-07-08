@@ -1,4 +1,4 @@
-# REST API Example
+# GraphQL API Example
 
 ## Quick Start
 
