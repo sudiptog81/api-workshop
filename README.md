@@ -1,4 +1,4 @@
-# REST API Example
+# GRPC Example
 
 ## Quick Start
 
