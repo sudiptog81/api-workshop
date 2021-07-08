@@ -1,11 +1,5 @@
 const express = require('express');
-
-const app = express();
-
-app.use(express.json());
-app.use(express.urlencoded({
-  extended: true
-}));
+const { ApolloServer, gql } = require('apollo-server-express');
 
 let books = [{
   isbn: "1234",
@@ -13,30 +7,45 @@ let books = [{
   author: 'Someone Famous'
 }];
 
-app.get('/api/v1/books', (req, res) => res.json({ data: books }));
-
-app.get('/api/v1/books/:isbn', (req, res) => res.json({
-  data: books.filter((book) => book.isbn === req.params.isbn)
-}));
-
-app.post('/api/v1/books', (req, res) => {
-  books.push(req.body);
-  res.json({ data: books });
-});
-
-app.put('/api/v1/books', (req, res) => {
-  bookIdx = books.findIndex((book) => book.isbn === req.body.isbn);
-  delete req.body.isbn;
-  for (const key in req.body) {
-    books[bookIdx][key] = req.body[key];
+const typeDefs = gql`
+  type Query {
+    books: [Book]
+    book(isbn: String!): Book
   }
-  res.json({ data: books });
-});
 
-app.delete('/api/v1/books/:isbn', (req, res) => {
-  books = books.filter((book) => book.isbn !== req.params.isbn);
-  res.json({ data: books });
-});
+  type Mutation {
+    addBook(isbn: String!, title: String!, author: String!): [Book]
+  }
 
-app.listen(5000, () => console.log('Server Started on Port 5000'));
+  type Book {
+    isbn: String!
+    title: String!
+    author: String!
+  }
+`;
+ 
+const resolvers = {
+  Query: {
+    books: () => books,
+    book: (parent, args, context, info) => {
+      return books.find(
+        (book) => book.isbn === args.isbn
+      );
+    }
+  },
+  Mutation: {
+    addBook: (arent, args, context, info) => {
+      books.push(args);
+      return books;
+    }
+  }
+};
+ 
+const app = express();
+const server = new ApolloServer({ typeDefs, resolvers });
 
+server.applyMiddleware({ app });
+
+app.listen(5000, () =>
+  console.log('Server Started http://localhost:5000' + server.graphqlPath)
+);
