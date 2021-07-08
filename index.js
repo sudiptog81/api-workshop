@@ -10,13 +10,20 @@ app.use(express.urlencoded({
 let books = [{
   isbn: "1234",
   title: 'A good book',
-  author: 'Someone Famous'
+  author: 'Someone Famous',
+  sales: {
+    amount: 10
+  }
 }];
 
 app.get('/api/v1/books', (req, res) => res.json({ data: books }));
 
 app.get('/api/v1/books/:isbn', (req, res) => res.json({
-  data: books.filter((book) => book.isbn === req.params.isbn)
+  data: books.find((book) => book.isbn === req.params.isbn)
+}));
+
+app.get('/api/v1/books/:isbn/sales', (req, res) => res.json({
+  data: books.find((book) => book.isbn === req.params.isbn).sales
 }));
 
 app.post('/api/v1/books', (req, res) => {
