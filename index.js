@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const { ApolloServer, gql } = require('apollo-server-express');
 
 let books = [{
@@ -50,6 +51,13 @@ const resolvers = {
 };
  
 const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}));
+
 const server = new ApolloServer({ typeDefs, resolvers });
 
 server.applyMiddleware({ app });

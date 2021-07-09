@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST Test</title>
+  </head>
+
+  <body>
+    <ul id="books"></ul>
+    <script>
+      (async () => {
+        const res = await fetch('http://localhost:5000/graphql', {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': '*/*'
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            query: `
+            {
+              books {
+                isbn
+                title
+                author
+                sales {
+                  amount
+                }
+              }
+            }`,
+            variables: {}
+          })
+        });
+        const data = (await res.json()).data.books;
+        const list = document.getElementById('books');
+        for (const book of data) {
+          const node = document.createElement("li");
+          const textnode = document.createTextNode(`${book.title} by ${book.author} (${book.isbn}) - ₹${book.sales.amount}`);
+          node.appendChild(textnode);
+          list.appendChild(node);
+        }
+      })()
+    </script>
+  </body>
+
+</html>
